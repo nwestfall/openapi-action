@@ -2451,7 +2451,7 @@ function getAstNodeByPointer(root, pointer, reportOnKey) {
     for (const key of pointerSegments) {
       if (currentNode.kind === yamlAst.Kind.MAP) {
         const mapping = currentNode.mappings.find((m) => m.key.value === key);
-        if (!mapping && !mapping.value) break;
+        if (!mapping || !mapping.value) break;
         currentNode = mapping.value;
       } else if (currentNode.kind === yamlAst.Kind.SEQ) {
         const elem = currentNode.items[parseInt(key, 10)];
