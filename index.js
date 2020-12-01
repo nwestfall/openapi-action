@@ -149,64 +149,71 @@ function getAstNodeByPointer(root, pointer, reportOnKey) {
 }
 
 async function exec () {
-    const file = core.getInput('file', { required: true });
-    const config = await openapi.loadConfig(undefined);
-    const lintData = await openapi.lint({
-        ref: file,
-        config: config
-    });
-
-    const findings = [];
-    for(var i = 0; i < lintData.length; i++) {
-        const finding = lintData[i];
-        const location = finding.location[0];
-        const line = getLineColLocation(location);
-        findings.push({
-            path: file,
-            start_line: line.start.line,
-            end_line: line.end.line,
-            start_column: line.start.col,
-            end_column: line.end.col,
-            title: `${finding.ruleId} - ${location.pointer}`,
-            message: finding.message,
-            annotation_level: finding.severity === 'error' ? 'failure' : finding.severity == 'warn' ? 'warning' : 'notice'
+    try {
+        const file = core.getInput('file', { required: true });
+        const config = await openapi.loadConfig(undefined);
+        const lintData = await openapi.lint({
+            ref: file,
+            config: config
         });
-    }
 
-    console.table(findings);
+        const findings = [];
+        for(var i = 0; i < lintData.length; i++) {
+            const finding = lintData[i];
+            const location = finding.location[0];
+            const line = getLineColLocation(location);
+            findings.push({
+                path: file,
+                start_line: line.start.line,
+                end_line: line.end.line,
+                start_column: line.start.col,
+                end_column: line.end.col,
+                title: `${finding.ruleId} - ${location.pointer}`,
+                message: finding.message,
+                annotation_level: finding.severity === 'error' ? 'failure' : finding.severity == 'warn' ? 'warning' : 'notice'
+            });
+        }
 
-    const octokit = new github.getOctokit(core.getInput('github_token', { required: true }));
-    const ref = github.context.sha;
-    const owner = github.context.repo.owner;
-    const repo = github.context.repo.repo;
-    const title = 'Open API Lint Check';
-    const { failureCount, warningCount, noticeCount } = stats(findings);
-    const conclusion = generateConclusion(failureCount, warningCount, noticeCount);
-    const summary = generateSummary(failureCount, warningCount, noticeCount);
+        console.table(findings);
 
-    const { data: { id: checkRunId } } = await octokit.checks.create({
-        owner,
-        repo,
-        name: title,
-        head_sha: ref,
-        status: 'in_progress'
-    });
+        const octokit = new github.getOctokit(core.getInput('github_token', { required: true }));
+        const ref = github.context.sha;
+        const owner = github.context.repo.owner;
+        const repo = github.context.repo.repo;
+        const title = 'Open API Lint Check';
+        const { failureCount, warningCount, noticeCount } = stats(findings);
+        const conclusion = generateConclusion(failureCount, warningCount, noticeCount);
+        const summary = generateSummary(failureCount, warningCount, noticeCount);
 
-    const batchFindings = batch(50, findings);
-    for(var i = 0; i < batchFindings.length; i++) {
-        const annotations = batchFindings[i];
-        await octokit.checks.update({
+        const { data: { id: checkRunId } } = await octokit.checks.create({
             owner,
             repo,
-            check_run_id: checkRunId,
-            status: 'completed',
-            conclusion,
-            output: {
-                title,
-                summary,
-                annotations
-            }
+            name: title,
+            head_sha: ref,
+            status: 'in_progress'
         });
+
+        console.log(`Check Run Id - ${checkRunId}`);
+        const batchFindings = batch(50, findings);
+        for(var i = 0; i < batchFindings.length; i++) {
+            const annotations = batchFindings[i];
+            console.log(`Updating ${annotations.length} annotations`);
+            await octokit.checks.update({
+                owner,
+                repo,
+                check_run_id: checkRunId,
+                status: 'completed',
+                conclusion,
+                output: {
+                    title,
+                    summary,
+                    annotations
+                }
+            });
+        }
+    } catch(e) {
+        console.error(e)
+        process.exit(1) 
     }
 }
 
