@@ -177,7 +177,7 @@ async function exec () {
     const owner = github.context.repo.owner;
     const repo = github.context.repo.repo;
     const title = 'Open API Lint Check';
-    const { failureCount, warningCount, noticeCount } = stats(annotations);
+    const { failureCount, warningCount, noticeCount } = stats(findings);
     const conclusion = generateConclusion(failureCount, warningCount, noticeCount);
     const summary = generateSummary(failureCount, warningCount, noticeCount);
 
