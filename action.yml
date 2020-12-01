@@ -1,6 +1,10 @@
 name: 'OpenAPI Lint Action'
 description: 'Use OpenAPI Linter in GitHub Actions'
 author: 'nwestfall'
+inputs:
+  github_token:
+    required: true
+    description: 'GitHub Personal Access Token'
 runs:
   using: 'node12'
   main: 'dist/index.js'
