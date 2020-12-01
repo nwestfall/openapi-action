@@ -2519,8 +2519,8 @@ async function exec () {
     });
 
     const batchFindings = batch(50, findings);
-    for(const batch in batchFindings) {
-        const annotations = batch;
+    for(var i = 0; i < batchFindings.length; i++) {
+        const annotations = batchFindings[i];
         await octokit.checks.update({
             owner,
             repo,
