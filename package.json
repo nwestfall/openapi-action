@@ -17,6 +17,9 @@
     "yaml-ast-parser": "0.0.43"
   },
   "devDependencies": {
-    "@zeit/ncc": "^0.22.3"
+    "@zeit/ncc": "^0.22.3",
+    "eslint": "^7.14.0",
+    "null-loader": "^4.0.1",
+    "standard": "^16.0.3"
   }
 }

@@ -1,0 +1,9 @@
+name: 'OpenAPI Lint Action'
+description: 'Use OpenAPI Linter in GitHub Actions'
+author: 'nwestfall'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
+branding:
+  icon: 'shield'
+  color: 'blue'

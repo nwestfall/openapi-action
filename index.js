@@ -64,10 +64,15 @@ function getLineColLocation(location) {
     const { source, pointer, reportOnKey } = location;
     const ast = source.getAst();
     const astNode = getAstNodeByPointer(ast, pointer, !!reportOnKey);
+    var startPosition = 1;
+    var endPosition = 1;
+    if(astNode != undefined && astNode.startPosition != undefined)
+        startPosition = astNode.startPosition;
+    if(astNode != undefined && astNode.endPosition != undefined)
+        endPosition = astNode.endPosition;
+    const pos = positionsToLoc(source.body, startPosition, endPosition);
     return {
-      ...location,
-      pointer: undefined,
-      ...positionsToLoc(source.body, astNode?.startPosition ?? 1, astNode?.endPosition ?? 1),
+      ...pos
     };
 }
   
@@ -119,8 +124,8 @@ function getAstNodeByPointer(root, pointer, reportOnKey) {
     for (const key of pointerSegments) {
       if (currentNode.kind === yamlAst.Kind.MAP) {
         const mapping = currentNode.mappings.find((m) => m.key.value === key);
-        if (!mapping?.value) break;
-        currentNode = mapping?.value;
+        if (!mapping && !mapping.value) break;
+        currentNode = mapping.value;
       } else if (currentNode.kind === yamlAst.Kind.SEQ) {
         const elem = currentNode.items[parseInt(key, 10)];
         if (!elem) break;
