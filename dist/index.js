@@ -2499,7 +2499,7 @@ async function exec () {
         });
     }
 
-    const octokit = new github.getOctokit(core.getInput('token', { required: true }));
+    const octokit = new github.getOctokit(core.getInput('github_token', { required: true }));
     const ref = github.context.sha;
     const owner = github.context.repo.owner;
     const repo = github.context.repo.repo;
