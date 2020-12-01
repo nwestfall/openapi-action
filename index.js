@@ -172,6 +172,8 @@ async function exec () {
         });
     }
 
+    console.table(findings);
+
     const octokit = new github.getOctokit(core.getInput('github_token', { required: true }));
     const ref = github.context.sha;
     const owner = github.context.repo.owner;
@@ -191,6 +193,7 @@ async function exec () {
 
     const batchFindings = batch(50, findings);
     for(const batch in batchFindings) {
+        const annotations = batch;
         await octokit.checks.update({
             owner,
             repo,
@@ -200,7 +203,7 @@ async function exec () {
             output: {
                 title,
                 summary,
-                batch
+                annotations
             }
         });
     }
