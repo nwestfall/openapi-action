@@ -30,3 +30,4 @@ jobs:
         uses: ./
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          file: swagger.json

@@ -2476,9 +2476,10 @@ function getAstNodeByPointer(root, pointer, reportOnKey) {
 }
 
 async function exec () {
+    const file = core.getInput('file', { required: true });
     const config = await openapi.loadConfig(undefined);
     const lintData = await openapi.lint({
-        ref: 'swagger.json',
+        ref: file,
         config: config
     });
 
@@ -2488,7 +2489,7 @@ async function exec () {
         const location = finding.location[0];
         const line = getLineColLocation(location);
         findings.push({
-            path: 'swagger.json',
+            path: file,
             start_line: line.start.line,
             end_line: line.end.line,
             start_column: line.start.col,

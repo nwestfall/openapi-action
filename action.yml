@@ -9,5 +9,5 @@ runs:
   using: 'node12'
   main: 'dist/index.js'
 branding:
-  icon: 'shield'
+  icon: 'umbrella'
   color: 'blue'
