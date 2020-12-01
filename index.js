@@ -195,9 +195,10 @@ async function exec () {
 
         console.log(`Check Run Id - ${checkRunId}`);
         const batchFindings = batch(50, findings);
-        for(var i = 0; i < batchFindings.length; i++) {
-            const annotations = batchFindings[i];
-            console.log(`Updating ${annotations.length} annotations`);
+        for(var i = 0; i < findings.length; i++) {
+            const annotations = [];
+            annotations.push(findings[i]);
+            //console.log(`Updating ${annotations.length} annotations`);
             await octokit.checks.update({
                 owner,
                 repo,
