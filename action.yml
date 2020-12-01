@@ -2,6 +2,9 @@ name: 'OpenAPI Lint Action'
 description: 'Use OpenAPI Linter in GitHub Actions'
 author: 'nwestfall'
 inputs:
+  file:
+    required: true
+    description: 'Path to file to lint'
   github_token:
     required: true
     description: 'GitHub Personal Access Token'
