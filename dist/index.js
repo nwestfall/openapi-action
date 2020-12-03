@@ -2364,11 +2364,11 @@ const stats = function (annotations) {
 
 const generateConclusion = function (failureCount, warningCount, noticeCount) {
     let conclusion = 'success'
-    /*if (failureCount > 0) {
+    if (failureCount > 0) {
       conclusion = 'failure'
     } else if (warningCount > 0 || noticeCount > 0) {
       conclusion = 'neutral'
-    }*/
+    }
     return conclusion
 }
 
@@ -2494,8 +2494,6 @@ async function exec () {
                 path: file,
                 start_line: line.start.line,
                 end_line: line.end.line,
-                start_column: line.start.col,
-                end_column: line.end.col,
                 title: `${finding.ruleId} - ${location.pointer}`,
                 message: finding.message,
                 annotation_level: finding.severity === 'error' ? 'failure' : finding.severity == 'warn' ? 'warning' : 'notice'
@@ -2518,8 +2516,7 @@ async function exec () {
             name: title,
             head_sha: GITHUB_SHA,
             status: 'in_progress',
-            started_at: new Date(),
-            external_id: '1'
+            started_at: new Date()
         };
         console.log(createCheckRunData);
         const data = await octokit.checks.create(createCheckRunData);
