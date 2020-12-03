@@ -37,11 +37,11 @@ const stats = function (annotations) {
 
 const generateConclusion = function (failureCount, warningCount, noticeCount) {
     let conclusion = 'success'
-    if (failureCount > 0) {
+    /*if (failureCount > 0) {
       conclusion = 'failure'
     } else if (warningCount > 0 || noticeCount > 0) {
       conclusion = 'neutral'
-    }
+    }*/
     return conclusion
 }
 
@@ -208,7 +208,7 @@ async function exec () {
             const updateData = {
                 owner,
                 repo,
-                name: data.name,
+                name: data.data.name,
                 check_run_id: checkRunId,
                 status: 'completed',
                 completed_at: new Date(),
