@@ -185,13 +185,15 @@ async function exec () {
         const conclusion = generateConclusion(failureCount, warningCount, noticeCount);
         const summary = generateSummary(failureCount, warningCount, noticeCount);
 
-        const { data: { id: checkRunId } } = await octokit.checks.create({
+        const createCheckRunData = {
             owner,
             repo,
             name: title,
             head_sha: ref,
             status: 'in_progress'
-        });
+        };
+        console.log(createCheckRunData);
+        const { data: { id: checkRunId } } = await octokit.checks.create(createCheckRunData);
 
         console.log(`Check Run Id - ${checkRunId}`);
         const batchFindings = batch(50, findings);
