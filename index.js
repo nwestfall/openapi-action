@@ -2,6 +2,7 @@ const openapi = require('@redocly/openapi-core');
 const yamlAst = require('yaml-ast-parser');
 const core = require('@actions/core');
 const github = require('@actions/github');
+const {GITHUB_SHA, GITHUB_EVENT_PATH, GITHUB_TOKEN, GITHUB_WORKSPACE} = process.env;
 
 const batch = (size, inputs) => inputs.reduce((batches, input) => {
     const current = batches[batches.length - 1]
@@ -177,7 +178,6 @@ async function exec () {
         console.table(findings);
 
         const octokit = new github.getOctokit(core.getInput('github_token', { required: true }));
-        const ref = github.context.sha;
         const owner = github.context.repo.owner;
         const repo = github.context.repo.repo;
         const title = 'Open API Lint Check';
@@ -189,8 +189,10 @@ async function exec () {
             owner,
             repo,
             name: title,
-            head_sha: ref,
-            status: 'in_progress'
+            head_sha: GITHUB_SHA,
+            status: 'in_progress',
+            started_at: new Date(),
+            external_id: '1'
         };
         console.log(createCheckRunData);
         const data = await octokit.checks.create(createCheckRunData);
@@ -203,18 +205,22 @@ async function exec () {
             const annotations = [];
             annotations.push(findings[i]);
             //console.log(`Updating ${annotations.length} annotations`);
-            /*await octokit.checks.update({
+            const updateData = {
                 owner,
                 repo,
+                name: data.name,
                 check_run_id: checkRunId,
                 status: 'completed',
+                completed_at: new Date(),
                 conclusion,
                 output: {
                     title,
                     summary,
                     annotations
                 }
-            });*/
+            };
+            console.log(updateData);
+            await octokit.checks.update(updateData);
         }
     } catch(e) {
         console.error(e)
