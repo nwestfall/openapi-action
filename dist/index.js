@@ -2524,7 +2524,7 @@ async function exec () {
         console.log(createCheckRunData);
         const data = await octokit.checks.create(createCheckRunData);
         console.log(data);
-        const checkRunId = data.id;
+        const checkRunId = data.data.id;
 
         console.log(`Check Run Id - ${checkRunId}`);
         const batchFindings = batch(50, findings);
