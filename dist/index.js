@@ -2526,7 +2526,7 @@ async function exec () {
             const annotations = [];
             annotations.push(findings[i]);
             //console.log(`Updating ${annotations.length} annotations`);
-            await octokit.checks.update({
+            /*await octokit.checks.update({
                 owner,
                 repo,
                 check_run_id: checkRunId,
@@ -2537,7 +2537,7 @@ async function exec () {
                     summary,
                     annotations
                 }
-            });
+            });*/
         }
     } catch(e) {
         console.error(e)
