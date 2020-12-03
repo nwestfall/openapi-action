@@ -2547,7 +2547,11 @@ async function exec () {
                 }
             };
             console.log(updateData);
-            await octokit.checks.update(updateData);
+            try {
+                await octokit.checks.update(updateData);
+            } catch {
+                console.error('Unable to post annotation');
+            }
         }
     } catch(e) {
         console.error(e)
