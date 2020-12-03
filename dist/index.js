@@ -2509,11 +2509,9 @@ async function exec () {
         const { failureCount, warningCount, noticeCount } = stats(findings);
         const conclusion = generateConclusion(failureCount, warningCount, noticeCount);
         const summary = generateSummary(failureCount, warningCount, noticeCount);
-        var sha = GITHUB_SHA;
-        if(github.context.ref !== undefined)
-            sha = github.context.ref;
+        var sha = github.context.run_id;
 
-        const createCheckRunData = {
+        /*const createCheckRunData = {
             owner,
             repo,
             name: title,
@@ -2521,8 +2519,9 @@ async function exec () {
             status: 'in_progress',
             started_at: new Date()
         };
-        const data = await octokit.checks.create(createCheckRunData);
-        const checkRunId = data.data.id;
+        const data = await octokit.checks.create(createCheckRunData);*/
+        //const checkRunId = data.data.id;
+        const checkRunId = sha;
 
         console.log(`Check Run Id - ${checkRunId}`);
         const batchFindings = batch(50, findings);
