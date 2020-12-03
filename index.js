@@ -182,26 +182,25 @@ async function exec () {
         const { failureCount, warningCount, noticeCount } = stats(findings);
         const conclusion = generateConclusion(failureCount, warningCount, noticeCount);
         const summary = generateSummary(failureCount, warningCount, noticeCount);
+        var sha = GITHUB_SHA;
+        if(github.context.ref !== undefined)
+            sha = github.context.ref;
 
         const createCheckRunData = {
             owner,
             repo,
             name: title,
-            head_sha: GITHUB_SHA,
+            head_sha: sha,
             status: 'in_progress',
             started_at: new Date()
         };
-        console.log(createCheckRunData);
         const data = await octokit.checks.create(createCheckRunData);
-        console.log(data);
         const checkRunId = data.data.id;
 
         console.log(`Check Run Id - ${checkRunId}`);
         const batchFindings = batch(50, findings);
-        for(var i = 0; i < findings.length; i++) {
-            const annotations = [];
-            annotations.push(findings[i]);
-            //console.log(`Updating ${annotations.length} annotations`);
+        for(var i = 0; i < batchFindings.length; i++) {
+            const annotations = batchFindings[i];
             const updateData = {
                 owner,
                 repo,
@@ -216,11 +215,10 @@ async function exec () {
                     annotations
                 }
             };
-            console.log(updateData);
             try {
                 await octokit.checks.update(updateData);
             } catch {
-                console.error('Unable to post annotation');
+                console.error('Unable to post annotation batch');
             }
         }
     } catch(e) {
