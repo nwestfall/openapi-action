@@ -2530,7 +2530,7 @@ async function exec () {
             const updateData = {
                 owner,
                 repo,
-                name: data.data.name,
+                //name: data.data.name,
                 check_run_id: checkRunId,
                 status: 'completed',
                 completed_at: new Date(),
