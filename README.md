@@ -5,7 +5,8 @@ https://github.com/Redocly/openapi-cli
 
 ```
 - name: OpenAPI Lint Checks
-- uses: nwestfall/openapi-action@main
+- uses: nwestfall/openapi-action@v1.0.1
   with:
     github_token: ${{ secrets.GITHUB_TOKEN }}
+    file: FILE_PATH
 ```
